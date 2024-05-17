@@ -173,6 +173,10 @@ void drawWheel(float x, float y, float z, float radius) {
 
 
 void drawBicycle() {
+    glPushMatrix();
+    float rotationDifference = rightWheelRotation - leftWheelRotation;
+    float rotationAngle = rotationDifference * 0.5f; // Adjust rotation speed
+    glRotatef(rotationAngle, 0.0f, 1.0f, 0.0f); // Rotate around y-axis based on wheel rotation difference
     glColor3f(0.0f, 0.0f, 0.0f);
     // Draw frame
     glBegin(GL_LINES);
@@ -189,7 +193,9 @@ void drawBicycle() {
     // Draw wheels
     drawWheel(-0.2f, -0.3f, 0.3f, 0.1f);
     drawWheel(0.2f, -0.3f, 0.3f, 0.1f);
+    glPopMatrix();
 }
+
 
 void updateCameraPosition() {
     camX = camRadius * sin(angle);
@@ -241,21 +247,27 @@ void mouse(int button, int state, int x, int y) {
         animate = false;
     }
 }
+bool firstTime = true; // Initialize firstTime as true
 
 void update(int value) {
-    if (animate) {
-        bikeAngle += 0.01f;
-        if (bikeAngle >= 2 * 3.14159265358979323846f) {
-            bikeAngle -= 2 * 3.14159265358979323846f;
+    if (animate || firstTime) {
+        if (!firstTime) {
+            // Incremental movement when animation is enabled
+            bikeAngle += 0.01f;
+            if (bikeAngle >= 2 * 3.14159265358979323846f) {
+                bikeAngle -= 2 * 3.14159265358979323846f;
+            }
+            bikeX = varx * cos(bikeAngle);
+            bikeZ = varz * sin(bikeAngle);
+            rightWheelRotation += 1.0f;
+            leftWheelRotation += 1.0f;
         }
-        bikeX = varx * cos(bikeAngle);
-        bikeZ = varz * sin(bikeAngle);
-        rightWheelRotation += 1.0f;
-        leftWheelRotation += 1.0f;
+        firstTime = false; // Set firstTime to false after initial animation
     }
     glutPostRedisplay();
     glutTimerFunc(16, update, 0);
 }
+
 
 int main(int argc, char** argv) {
     glutInit(&argc, argv);
