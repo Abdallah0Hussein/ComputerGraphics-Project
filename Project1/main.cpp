@@ -157,17 +157,32 @@ void drawWheel(float x, float y, float z, float radius) {
     glTranslatef(x, y, z);
     glRotatef(wheelRotation, 0.0f, 0.0f, 1.0f);
     glutSolidTorus(0.01f, radius, 12, 36);
+
+    // Draw spokes
+    glBegin(GL_LINES);
+    for (int i = 0; i < 12; ++i) {
+        float angle = i * (360.0f / 12);
+        float radian = angle * 3.14159265358979323846f / 180.0f;
+        glVertex3f(0.0f, 0.0f, 0.0f);
+        glVertex3f(radius * cos(radian), radius * sin(radian), 0.0f);
+    }
+    glEnd();
+
     glPopMatrix();
 }
+
 
 void drawBicycle() {
     glColor3f(0.0f, 0.0f, 0.0f);
     // Draw frame
     glBegin(GL_LINES);
+
     glVertex3f(-0.2f, -0.3f, 0.3f);
     glVertex3f(0.2f, -0.3f, 0.3f);
+
     glVertex3f(0.0f, -0.3f, 0.3f);
     glVertex3f(0.0f, -0.1f, 0.3f);
+
     glVertex3f(0.0f, -0.1f, 0.3f);
     glVertex3f(0.2f, -0.3f, 0.3f);
     glEnd();
